@@ -1,54 +1,80 @@
-#include <iostream>
-#include "stack.h"
-using namespace std;
+import java.util.Stack;
+import java.util.Scanner;
 
-int main() {
-    Stack history;
-    int pilihan;
-    string url;
+public class BrowserHistory {
+    private Stack<String> history = new Stack<>();
 
-    while (true) {
-        cout << "\nMenu Browser History:" << endl;
-        cout << "1. Browse (Kunjungi Website)" << endl;
-        cout << "2. Back (Kembali ke halaman sebelumnya)" << endl;
-        cout << "3. View History" << endl;
-        cout << "4. Exit" << endl;
-        cout << "Pilih: ";
-        cin >> pilihan;
+    public void browse(String url) {
+        history.push(url);
+        System.out.println("Browsing: " + url);
+    }
 
-        switch (pilihan) {
-            case 1:
-                cout << "Masukkan URL: ";
-                cin >> url;
-                history.push(url);
-                cout << "Browsing: " << url << endl;
-                break;
+    public void back() {
+        if (history.isEmpty()) {
+            System.out.println("History kosong. Tidak bisa kembali.");
+            return;
+        }
 
-            case 2:
-                if (history.isEmpty()) {
-                    cout << "History kosong, tidak bisa kembali." << endl;
-                } else {
-                    cout << "Kembali dari: " << history.top() << endl;
-                    history.pop();
-                    if (!history.isEmpty())
-                        cout << "Sekarang di: " << history.top() << endl;
-                    else
-                        cout << "Tidak ada history tersisa." << endl;
-                }
-                break;
+        String removed = history.pop();
+        System.out.println("Kembali dari: " + removed);
 
-            case 3:
-                cout << "\n=== Browser History (Terbaru ke Terlama) ===" << endl;
-                history.display();
-                break;
-
-            case 4:
-                return 0;
-
-            default:
-                cout << "Pilihan tidak valid." << endl;
+        if (!history.isEmpty()) {
+            System.out.println("Sekarang berada di: " + history.peek());
+        } else {
+            System.out.println("Tidak ada history tersisa.");
         }
     }
 
-    return 0;
+    public void view() {
+        if (history.isEmpty()) {
+            System.out.println("History kosong.");
+            return;
+        }
+
+        System.out.println("\n=== Browser History (Terbaru ke Terlama) ===");
+        for (int i = history.size() - 1; i >= 0; i--) {
+            System.out.println(history.get(i));
+        }
+        System.out.println("===========================================\n");
+    }
+
+    public static void main(String[] args) {
+        BrowserHistory browser = new BrowserHistory();
+        Scanner input = new Scanner(System.in);
+
+        while (true) {
+            System.out.println("\nMenu:");
+            System.out.println("1. Browse");
+            System.out.println("2. Back");
+            System.out.println("3. View History");
+            System.out.println("4. Exit");
+            System.out.print("Pilih: ");
+
+            int pilihan = input.nextInt();
+            input.nextLine();
+
+            switch (pilihan) {
+                case 1:
+                    System.out.print("Masukkan URL: ");
+                    String url = input.nextLine();
+                    browser.browse(url);
+                    break;
+
+                case 2:
+                    browser.back();
+                    break;
+
+                case 3:
+                    browser.view();
+                    break;
+
+                case 4:
+                    System.out.println("Program selesai.");
+                    return;
+
+                default:
+                    System.out.println("Pilihan tidak valid.");
+            }
+        }
+    }
 }
